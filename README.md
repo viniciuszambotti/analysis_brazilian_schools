@@ -1,4 +1,5 @@
 # Brazilian schools analysis
+[LinkedIn](https://www.linkedin.com/in/vinicius-zambotti-768160b2/)
 
  This analysis was made using public information that can be found here: http://dados.gov.br/dataset/media-de-alunos-por-turma-na-educacao-basica.
 
