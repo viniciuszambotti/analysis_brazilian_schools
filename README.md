@@ -12,77 +12,67 @@ I'm using two files to cover the whole Brazil
 
 	 
 
-    df1 <- data.frame(read.csv(file = 'media_alunos_turma_municipios_2010 - Municípios SE, Sul e CO.csv',skip = 9, encoding = "UTF-8", sep = ','))
-    df2 <- data.frame(read.csv(file = 'media_alunos_turma_municipios_2010 - Municípios NO e NE.csv',skip = 9, encoding = "UTF-8", sep = ','))
+	df1 <- read_csv("media_alunos_turma_municipios_2010 - Municipios SE, Sul e CO.csv", 
+			skip = 9,
+			col_names= c("Ano", "Regiao", "UF", "Cod_municipio", "Municipio", "Localizacao",
+				     "Rede","Total_infantil","Creche","Total_fundamental", "Anos_iniciais",
+				     "Anos_finais","1_ano","2_ano","3_ano","4_ano","5_ano","6_ano","7_ano",
+				     "8_ano","9_ano","Turmas_unificadas","Total_medio","1_medio","2_medio",
+				     "3_medio","4_medio","Medio_nao_seriado"),
+			col_types = list(
+			  Total_medio = col_double(),
+			  Total_infantil = col_double(),
+			  Total_fundamental = col_double()
+
+			))
+
+	df2 <- read_csv("media_alunos_turma_municipios_2010 - Municipios NO e NE.csv", 
+			skip = 9,
+			col_names= c("Ano", "Regiao", "UF", "Cod_municipio", "Municipio", "Localizacao",
+				     "Rede","Total_infantil","Creche","Total_fundamental", "Anos_iniciais",
+				     "Anos_finais","1_ano","2_ano","3_ano","4_ano","5_ano","6_ano","7_ano",
+				     "8_ano","9_ano","Turmas_unificadas","Total_medio","1_medio","2_medio",
+				     "3_medio","4_medio","Medio_nao_seriado"),
+			col_types = list(
+			  Total_medio = col_double(),
+			  Total_infantil = col_double(),
+			  Total_fundamental = col_double()
+
+			))
 
 
+# Data wrangling
+	dfMedias <- data.frame(rbind(df1, df2)) %>%
+	  select(Ano, Regiao, Rede, UF, Municipio, Total_medio,Total_infantil, Total_fundamental ) %>%
+	  filter( Rede == 'Estadual' | Rede == 'Municipal'| Rede == 'Privada') %>%
+	  replace(., is.na(.), 0.0) %>%
+	  gather(ensino, value, Total_medio:Total_infantil:Total_fundamental) %>%
+	  filter( value > 0) %>%
+	  group_by(Ano, Regiao, Rede, UF, Municipio, ensino) %>%
+	  summarise(value = mean(value))
+	  
 # Results
 
-## Total of students by region in  kindergarten, elementary School and high school.
+## Mean of students for each classroom by region in  kindergarten, elementary School and high school.
 
-	df_sum_reg <- ddply(dfMedias, .(Regiao), summarize,  fundamental=sum(Total_fundamental), 
-                    medio=sum(Total_medio), infantil=sum(Total_infantil))
-	df_sum_reg <- df_sum_reg[df_sum_reg$Regiao != '',]
-	df_sum_reg <- melt(df_sum_reg, id = c("Regiao"))
-	
-	
-![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/bar1.png)
-   
-
-
-## Mean of students by region in  kindergarten, elementary School and high school.
-
-	df_mean_all <- ddply(dfMedias, .(Regiao), summarize,  fundamental=mean(Total_fundamental), 
-                           medio=mean(Total_medio), infantil=mean(Total_infantil))
-
-	# ignore values that don't have Regiao
-	df_mean_all <- df_mean_all[df_mean_all$Regiao != '',]
-
-	df_mean_all <- melt(df_mean_all, id = c("Regiao"))
+	df_mean_all <- dfMedias %>%
+	  group_by(Regiao, ensino) %>%
+	  summarise(value=mean(value))
 
 ![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/bar2.png)
 	
-## Total of students by teaching network in  kindergarten, elementary School and high school.
-	df_total_alunos_rede <- ddply(dfMedias, .(Rede), summarize,  total=sum(Total_fundamental + Total_medio + Total_infantil))
+## Mean of students for each classroom by teaching network in  kindergarten, elementary School and high school.
+	df_total_alunos_rede <- dfMedias %>%
+  	group_by(Rede) %>%
+ 	summarise(value=mean(value))
 
 ![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/bar3.png)
 
-## Percentage of students that reaches high school
-	df_numero_alunos <- ddply(dfMedias, .(Ano), summarize,  fundamental=sum(Total_fundamental), 
-	                          medio=sum(Total_medio), infantil=sum(Total_infantil))
-
-	df_numero_alunos <- df_numero_alunos[(df_numero_alunos$Ano == '2010'),]
-	df_numero_alunos$desistem_ensino_infantil <- (((df_numero_alunos$fundamental/df_numero_alunos$infantil) *100) - 100) * -1
-	df_numero_alunos$desistem_ensino_fundamental <- (((df_numero_alunos$medio/df_numero_alunos$fundamental) *100) - 100) * -1
-	df_numero_alunos$chegam_ensino_medio <- ((df_numero_alunos$desistem_ensino_infantil + df_numero_alunos$desistem_ensino_fundamental) - 100) * -1
-	df_numero_alunos <- subset(df_numero_alunos, select = c('Ano', 'desistem_ensino_infantil', 'desistem_ensino_fundamental', 'chegam_ensino_medio'))
-	df_numero_alunos <- melt(df_numero_alunos, id = c("Ano"))
-
-![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/dropoff.png)
-## Total of students by state
-	df_sum_uf <- ddply(dfMedias, .(UF), summarize,  total=sum(Total_fundamental + Total_medio + Total_infantil))
-
-	# ignore values that don't have Regiao
-	df_sum_uf <- df_sum_uf[df_sum_uf$UF != '',]
-
-	#format UF
-	df_sum_uf$UF_completo <- mapply(function(x) gsub(x, paste("BR-",x, sep=""), x),
-	                                df_sum_uf$UF)
-
-![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/map_total.PNG)
 
 ## Mean of students by state
-	df_mean_uf <- ddply(dfMedias, .(UF), summarize,  total=mean(Total_fundamental),
-	                    total2 = mean(Total_medio),
-	                    total3 = mean(Total_infantil))
-
-	df_mean_uf$total <- (df_mean_uf$total + df_mean_uf$total2 + df_mean_uf$total3) / 3
-
-	# ignore values that don't have Regiao
-	df_mean_uf <- df_mean_uf[df_sum_uf$UF != '',]
-
-	# Format UF
-	df_mean_uf$UF_completo <- mapply(function(x) gsub(x, paste("BR-",x, sep=""), x),
-	                                 df_mean_uf$UF)
+	df_mean_uf <- dfMedias %>%
+	  group_by(UF) %>%
+	  summarise(total=mean(value)) %>%
+	  mutate(UF_completo = paste("BR", UF, sep="-") )
 
 ![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/map_mean.PNG)
