@@ -59,14 +59,14 @@ I'm using two files to cover the whole Brazil
 	  group_by(Regiao, ensino) %>%
 	  summarise(value=mean(value))
 
-![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/bar2.png)
+![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/bar1.png)
 	
 ## Mean of students for each classroom by teaching network in  kindergarten, elementary School and high school.
 	df_total_alunos_rede <- dfMedias %>%
   	group_by(Rede) %>%
  	summarise(value=mean(value))
 
-![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/bar3.png)
+![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/bar2.png)
 
 
 ## Mean of students by state
