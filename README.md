@@ -3,7 +3,7 @@
 
  This analysis was made using public information that can be found here: http://dados.gov.br/dataset/media-de-alunos-por-turma-na-educacao-basica.
 
- I'm only considering  kindergarten, elementary school and high school in private, state and municipal school.
+ I'm only considering  kindergarten, elementary school and high school in private, state and municipal school in the year of 2010.
 
 
 ## Input files
@@ -69,7 +69,7 @@ I'm using two files to cover the whole Brazil
 ![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/bar2.png)
 
 
-## Mean of students by state
+## Mean of students for each classroom by state
 	df_mean_uf <- dfMedias %>%
 	  group_by(UF) %>%
 	  summarise(total=mean(value)) %>%
