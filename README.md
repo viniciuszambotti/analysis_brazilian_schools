@@ -3,7 +3,7 @@
 
  This analysis was made using public information that can be found here: http://dados.gov.br/dataset/media-de-alunos-por-turma-na-educacao-basica.
 
- I'm only considering  kindergarten, elementary school and high school in private, state and municipal school in the year of 2010.
+ I'm only considering  kindergarten, elementary school and high school in private, state and municipal network in the year of 2010.
 
 
 ## Input files
