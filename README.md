@@ -3,7 +3,7 @@
 
 Os dados dessa análise são de origem pública, e podem ser encontrados aqui:http://portal.inep.gov.br/indicadores-educacionais.
 
-Eu estou apenas considerando o ensino infantil, fundamental e médio, em escolas estaduais, municipais e privadas no ano de 2016
+Eu estou apenas considerando os ensinos infantil, fundamental e médio, em escolas estaduais, municipais e privadas no ano de 2016
 
 
 ## Dados de entrada
