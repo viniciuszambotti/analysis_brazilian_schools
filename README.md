@@ -28,7 +28,8 @@ Um dos arquivos é em relação a média de alunos por sala de aula e o outro é
 		
 	df3 <- read_csv2("TX_REND_ESCOLAS_2016.csv", skip = 10,
                 col_names = c("Ano", "Regiao", "UF", "Cod.Municipio", "Nome_municipio","Cod.Escola", "Nome_escola", "Loc", "Rede", 
-                              "Total_aprovacao_fundamental","apv_fund_anos_iniciais","apv_fund_anos_finais","apv_fund_1", "apv_fund_2", 				"apv_fund_3", 
+                              "Total_aprovacao_fundamental","apv_fund_anos_iniciais","apv_fund_anos_finais",
+			      "apv_fund_1", "apv_fund_2", "apv_fund_3", 
                               "apv_fund_4", "apv_fund_5", "apv_fund_6", "apv_fund_7", 
                               "apv_fund_8", "apv_fund_9","Total_aprovacao_medio", "apv_medio_1", "apv_medio_2", 
                               "apv_medio_3", "apv_medio_4", "apv_medio_nao_seriado","Total_reprovacao_fundamental",
