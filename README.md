@@ -80,7 +80,7 @@ Um dos arquivos é em relação a média de alunos por sala de aula e o outro é
 	  
 # Resultados
 
-## Média de alunos em sala de aula por região do Brasil
+## Média de alunos em sala de aula por regiões do Brasil
 
 	df_mean_all <- dfMedias %>%
 	  group_by(Regiao, ensino) %>%
@@ -88,7 +88,7 @@ Um dos arquivos é em relação a média de alunos por sala de aula e o outro é
 
 ![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/bar1.png)
 	
-## Média de alunos em sala de aula por rede de ensino
+## Média de alunos em sala de aula por redes de ensino
 	df_total_alunos_rede <- dfMedias %>%
   	group_by(Rede) %>%
  	summarise(value=mean(value))
@@ -96,7 +96,7 @@ Um dos arquivos é em relação a média de alunos por sala de aula e o outro é
 ![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/bar2.png)
 
 
-## Média de alunos em sala de aula por estado
+## Média de alunos em sala de aula por estados
 	df_mean_uf <- dfMedias %>%
 	  group_by(UF) %>%
 	  summarise(total=mean(value)) %>%
