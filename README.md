@@ -1,14 +1,14 @@
 # Brazilian schools analysis
 [LinkedIn](https://www.linkedin.com/in/vinicius-zambotti-768160b2/)
 
- This analysis was made using public information that can be found here:http://portal.inep.gov.br/indicadores-educacionais.
+Os dados dessa análise são de origem pública, e podem ser encontrados aqui:http://portal.inep.gov.br/indicadores-educacionais.
 
- I'm only considering  kindergarten, elementary school and high school in private, state and municipal network in the year of 2016.
+Eu estou apenas considerando o ensino infantil, fundamental e médio, em escolas estaduais, municipais e privadas no ano de 2016
 
 
-## Input files
+## Dados de entrada
 
-I'm using two files to cover the whole Brazil
+Um dos arquivos é em relação a média de alunos por sala de aula e o outro é a taxa de aprovação dos alunos
 
 	 
 
@@ -25,6 +25,7 @@ I'm using two files to cover the whole Brazil
                   Total_fundamental = col_double()
                   
                 ))
+		
 	df3 <- read_csv2("TX_REND_ESCOLAS_2016.csv", skip = 10,
                 col_names = c("Ano", "Regiao", "UF", "Cod.Municipio", "Nome_municipio","Cod.Escola", "Nome_escola", "Loc", "Rede", 
                               "Total_aprovacao_fundamental","apv_fund_anos_iniciais","apv_fund_anos_finais","apv_fund_1", "apv_fund_2", 				"apv_fund_3", 
@@ -51,7 +52,7 @@ I'm using two files to cover the whole Brazil
                 ))
 
 
-# Data wrangling
+# Transformação dos dados
 	dfMedias <- df1 %>%
 	  dplyr::select(Ano, Regiao, Rede, UF, Total_medio,Total_infantil, Total_fundamental ) %>%
 	  filter( Rede == 'Estadual' | Rede == 'Municipal'| Rede == 'Privada') %>%
@@ -62,23 +63,23 @@ I'm using two files to cover the whole Brazil
 	  summarise(value = mean(value))
 
 	dfRendimento <- df3 %>%
-			dplyr::select(Ano, Rede, UF, Total_aprovacao_fundamental,Total_aprovacao_medio, 
-				      Total_reprovacao_fundamental, Total_reprovacao_medio,
-			Total_abandono_fundamental, Total_abandono_medio) %>%
-			filter( Rede == 'Estadual' | Rede == 'Municipal'| Rede == 'Particular') %>%
-			replace(., is.na(.), 0.0) %>%
-			gather(ensino, perc,Total_aprovacao_fundamental:Total_aprovacao_medio:
-			Total_reprovacao_fundamental:Total_reprovacao_medio:
-				 Total_abandono_fundamental:Total_abandono_medio)%>%
-			filter( perc > 0) %>%
-			group_by(Ano, Rede, UF, ensino) %>%
-			summarise(mean = mean(perc), median = median(perc)) %>%
-			arrange(mean)
+		dplyr::select(Ano, Rede, UF, Total_aprovacao_fundamental,Total_aprovacao_medio, 
+			      Total_reprovacao_fundamental, Total_reprovacao_medio,
+		Total_abandono_fundamental, Total_abandono_medio) %>%
+		filter( Rede == 'Estadual' | Rede == 'Municipal'| Rede == 'Particular') %>%
+		replace(., is.na(.), 0.0) %>%
+		gather(ensino, perc,Total_aprovacao_fundamental:Total_aprovacao_medio:
+		Total_reprovacao_fundamental:Total_reprovacao_medio:
+			 Total_abandono_fundamental:Total_abandono_medio)%>%
+		filter( perc > 0) %>%
+		group_by(Ano, Rede, UF, ensino) %>%
+		summarise(mean = mean(perc), median = median(perc)) %>%
+		arrange(mean)
 
 	  
-# Results
+# Resultados
 
-## Average of students for each classroom by region in  kindergarten, elementary School and high school.
+## Média de alunos em sala de aula por região do Brasil
 
 	df_mean_all <- dfMedias %>%
 	  group_by(Regiao, ensino) %>%
@@ -86,7 +87,7 @@ I'm using two files to cover the whole Brazil
 
 ![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/bar1.png)
 	
-## Average of students for each classroom by teaching network in  kindergarten, elementary School and high school.
+## Média de alunos em sala de aula por rede de ensino
 	df_total_alunos_rede <- dfMedias %>%
   	group_by(Rede) %>%
  	summarise(value=mean(value))
@@ -94,7 +95,7 @@ I'm using two files to cover the whole Brazil
 ![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/bar2.png)
 
 
-## Average of students for each classroom by state
+## Média de alunos em sala de aula por estado
 	df_mean_uf <- dfMedias %>%
 	  group_by(UF) %>%
 	  summarise(total=mean(value)) %>%
@@ -102,7 +103,7 @@ I'm using two files to cover the whole Brazil
 
 ![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/map_mean.PNG)
 
-## States in relation to the average number of students per classroom
+## Relação dos estados brasileiros com a média de alunos por sala de aula
 	df_mean_uf <- dfMedias %>%
 	  group_by(UF) %>%
 	  summarise(total=mean(value)) %>%
@@ -111,7 +112,7 @@ I'm using two files to cover the whole Brazil
 
 ![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/point1.png)
 
-## Correlation between % approval and average of students per classroom (-0,22 - weak)
+## Correlação entre % de alunos aprovados e média de alunos por sala de aula (-0,22 - fraca)
 	df_mean_uf <- dfMedias %>%
 	  group_by(UF) %>%
 	  summarise(total=mean(value)) %>%
