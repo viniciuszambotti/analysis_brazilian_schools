@@ -114,10 +114,20 @@ Um dos arquivos é em relação a média de alunos por sala de aula e o outro é
 ![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/point1.png)
 
 ## Correlação entre % de alunos aprovados e média de alunos por sala de aula (-0,22 - fraca)
-	df_mean_uf <- dfMedias %>%
+
+	df_mean_uf_fundamental <- dfMedias %>%
+	  filter( ensino == 'Total_fundamental' | ensino == 'Total_medio') %>%
 	  group_by(UF) %>%
 	  summarise(total=mean(value)) %>%
 	  mutate(UF_completo = paste("BR", UF, sep="-"), z_score = scale(total), status = if_else(z_score > 0, 1, 0)) %>%
 	  arrange(total)
+
+	df_approval_uf <- dfRendimento %>%
+	  filter( ensino == 'Total_aprovacao_fundamental' | ensino == 'Total_aprovacao_medio') %>%
+	  group_by(UF) %>%
+	  summarise(total_aprovacao=mean(mean)) %>%
+	  arrange(total_aprovacao)
+
+	df_corr_approval_mean  <- full_join(df_approval_uf, df_mean_uf_fundamental, by = "UF")
 
 ![enter image description here](https://raw.githubusercontent.com/viniciuszambotti/analysis_brazillian_schools/master/images/point2.png)
